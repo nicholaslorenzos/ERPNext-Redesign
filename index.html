@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EKASA ERP</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link href="assets/css/globals.css" rel="stylesheet">
+  <link href="assets/css/sidebar.css" rel="stylesheet">
+  
+  <!-- React and ReactDOM for charts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+  
+  <!-- Include Recharts for charts -->
+  <script src="https://unpkg.com/recharts/umd/Recharts.min.js"></script>
+  
+  <!-- Responsive meta tag -->
+  <meta name="theme-color" content="#4f46e5">
+  
+  <!-- Custom styles to ensure proper icon rendering -->
+  <style>
+    svg.w-5, svg.w-4, svg.w-6 {
+      display: inline-flex;
+      vertical-align: middle;
+    }
+    
+    .w-6 {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    
+    .w-5 {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+    
+    .w-4 {
+      width: 1rem;
+      height: 1rem;
+    }
+    
+    .w-3 {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans antialiased">
+  <!-- Mobile Nav Toggle (Only visible on small screens) -->
+  <div id="mobile-nav-toggle" class="fixed top-4 left-4 z-50 md:hidden">
+    <button class="p-2 bg-white rounded-lg shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 h-screen z-40 shadow-md">
+    <!-- Sidebar content will be inserted by JavaScript -->
+  </aside>
+
+  <!-- Main Content -->
+  <div id="main-content" class="transition-all duration-300 ease-in-out ml-64">
+    <!-- Header -->
+    <header id="header" class="h-16 bg-white border-b border-gray-200 fixed right-0 top-0 z-30 left-64 transition-all duration-300 ease-in-out shadow-sm">
+      <!-- Header content will be inserted by JavaScript -->
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="pt-16 p-6">
+      <div id="dashboard-content" class="space-y-8 mt-6 px-6 pb-12">
+        <!-- Dashboard content will be inserted by JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/sidebar.js"></script>
+  <script src="assets/js/header.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script src="assets/js/home.js"></script>
+  
+  <!-- Initialize mobile menu -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize mobile menu toggle
+      const mobileToggle = document.getElementById('mobile-nav-toggle');
+      if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+          const sidebar = document.getElementById('sidebar');
+          if (sidebar.classList.contains('w-0') || sidebar.classList.contains('-left-64')) {
+            sidebar.classList.remove('w-0', '-left-64');
+            sidebar.classList.add('w-64', 'left-0');
+          } else {
+            sidebar.classList.remove('w-64', 'left-0');
+            sidebar.classList.add('w-0', '-left-64');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
