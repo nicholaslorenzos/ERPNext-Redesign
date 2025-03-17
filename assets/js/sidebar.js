@@ -3,6 +3,9 @@ let isSidebarOpen = true;
 let openSubmenuIndex = null;
 let activeMenuItem = 0; // Default active item (Home)
 let currentPage = 'home'; // Default page
+let isMobile = window.innerWidth < 768;
+let isSidebarShowing = false; // Tracks if sidebar is visible on mobile
+let sidebarContentInitialized = false;
 
 // Pages available in the application with subpages
 const pages = {
@@ -348,78 +351,78 @@ function renderActivityItem(icon, title, description, time, color = "indigo") {
 
 // Function to render a menu item with direct SVG
 function renderMenuItem(item, index, groupIndex) {
-    const { icon, label, children, page } = item;
-    const itemId = `menu-item-${groupIndex}-${index}`;
-    const hasChildren = children && children.length > 0;
-    const isActive = currentPage === page || (currentPage && currentPage.startsWith(page + '/'));
-    const isSubmenuOpen = openSubmenuIndex === `${groupIndex}-${index}`;
-    
-    // Get the SVG for this icon, or use a fallback
-    const iconSvg = svgIcons[icon] || svgIcons["Circle"];
-    
-    return `
-      <div class="relative group" id="${itemId}">
-        <button
-          class="${isSidebarOpen ? 'w-full px-3 py-2.5' : 'mx-auto w-10 h-11'} flex items-center ${isSidebarOpen ? '' : 'justify-center'} rounded-xl transition-all duration-200 ${
-            isActive 
-              ? 'bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm' 
-              : 'text-gray-600 hover:bg-indigo-50/50 hover:text-indigo-600'
-          }"
-          data-group="${groupIndex}"
-          data-index="${index}"
-          data-page="${page}"
-          onclick="handleMenuItemClick(${groupIndex}, ${index}, ${hasChildren}, '${page}')"
-        >
-          <span class="${isActive ? 'text-indigo-600' : 'text-gray-500 group-hover:text-indigo-600 transition-colors'}">
-            ${iconSvg}
-          </span>
-          
-          ${isSidebarOpen ? `
-            <span class="ml-3 text-sm font-medium truncate flex-1 text-left">
-              ${label}
-            </span>
-            ${hasChildren ? `
-              <span class="transition-transform ${isSubmenuOpen ? 'rotate-180 text-indigo-600' : 'text-gray-400'}">
-                ${svgIcons["ChevronDown"]}
-              </span>
-            ` : ''}
-          ` : ''}
-        </button>
+  const { icon, label, children, page } = item;
+  const itemId = `menu-item-${groupIndex}-${index}`;
+  const hasChildren = children && children.length > 0;
+  const isActive = currentPage === page || (currentPage && currentPage.startsWith(page + '/'));
+  const isSubmenuOpen = openSubmenuIndex === `${groupIndex}-${index}`;
   
-        ${!isSidebarOpen ? `
-          <div class="absolute left-full top-0 ml-2 px-2 py-1 bg-indigo-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-lg">
-            ${label}
-            ${hasChildren ? `
-              <span class="ml-1 text-amber-300">•</span>
-            ` : ''}
-          </div>
-        ` : ''}
+  // Get the SVG for this icon, or use a fallback
+  const iconSvg = svgIcons[icon] || svgIcons["Circle"];
+  
+  return `
+    <div class="relative group" id="${itemId}">
+      <button
+        class="${isSidebarOpen ? 'w-full px-3 py-2.5' : 'w-10 h-10 mx-auto'} flex items-center ${isSidebarOpen ? '' : 'justify-center'} rounded-xl transition-all duration-200 ${
+          isActive 
+            ? 'bg-indigo-50 text-indigo-600 border border-indigo-100 shadow-sm' 
+            : 'text-gray-600 hover:bg-indigo-50/50 hover:text-indigo-600'
+        }"
+        data-group="${groupIndex}"
+        data-index="${index}"
+        data-page="${page}"
+        onclick="handleMenuItemClick(${groupIndex}, ${index}, ${hasChildren}, '${page}')"
+      >
+        <span class="${isActive ? 'text-indigo-600' : 'text-gray-500 group-hover:text-indigo-600 transition-colors'}">
+          ${iconSvg.replace('class="w-5 h-5"', `class="w-5 h-5 ${!isSidebarOpen ? 'mx-auto' : ''}""`)}
+        </span>
         
-        ${hasChildren && isSubmenuOpen && isSidebarOpen ? `
-          <div class="ml-11 mt-1 space-y-1 submenu submenu-${groupIndex}-${index} ${isSubmenuOpen ? 'open' : ''}">
-            ${children.map((child, childIndex) => {
-              const childSlug = child.toLowerCase().replace(/\s+/g, '_').replace(/&/g, '_');
-              const subpagePath = `${page}/${childSlug}`;
-              const isSubActive = currentPage === subpagePath;
-              
-              return `
-                <button
-                  class="w-full flex items-center text-left py-2 px-3 text-sm ${isSubActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600'} hover:text-indigo-600 hover:bg-indigo-50/50 rounded-lg transition-colors"
-                  data-group="${groupIndex}"
-                  data-index="${index}"
-                  data-child="${childIndex}"
-                  data-subpage="${subpagePath}"
-                  onclick="handleSubmenuItemClick('${page}', '${childSlug}')"
-                >
-                  <div class="w-1.5 h-1.5 rounded-full ${isSubActive ? 'bg-indigo-500' : 'bg-amber-400'} mr-2"></div>
-                  ${child}
-                </button>
-              `;
-            }).join('')}
-          </div>
+        ${isSidebarOpen ? `
+          <span class="ml-3 text-sm font-medium truncate flex-1 text-left">
+            ${label}
+          </span>
+          ${hasChildren ? `
+            <span class="transition-transform ${isSubmenuOpen ? 'rotate-180 text-indigo-600' : 'text-gray-400'}">
+              ${svgIcons["ChevronDown"]}
+            </span>
+          ` : ''}
         ` : ''}
-      </div>
-    `;
+      </button>
+
+      ${!isSidebarOpen ? `
+        <div class="absolute left-full top-0 ml-2 px-2 py-1 bg-indigo-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-50 shadow-lg">
+          ${label}
+          ${hasChildren ? `
+            <span class="ml-1 text-amber-300">•</span>
+          ` : ''}
+        </div>
+      ` : ''}
+      
+      ${hasChildren && isSubmenuOpen && isSidebarOpen ? `
+        <div class="ml-11 mt-1 space-y-1 submenu submenu-${groupIndex}-${index} ${isSubmenuOpen ? 'open' : ''}">
+          ${children.map((child, childIndex) => {
+            const childSlug = child.toLowerCase().replace(/\s+/g, '_').replace(/&/g, '_');
+            const subpagePath = `${page}/${childSlug}`;
+            const isSubActive = currentPage === subpagePath;
+            
+            return `
+              <button
+                class="w-full flex items-center text-left py-2 px-3 text-sm ${isSubActive ? 'text-indigo-600 bg-indigo-50' : 'text-gray-600'} hover:text-indigo-600 hover:bg-indigo-50/50 rounded-lg transition-colors"
+                data-group="${groupIndex}"
+                data-index="${index}"
+                data-child="${childIndex}"
+                data-subpage="${subpagePath}"
+                onclick="handleSubmenuItemClick('${page}', '${childSlug}')"
+              >
+                <div class="w-1.5 h-1.5 rounded-full ${isSubActive ? 'bg-indigo-500' : 'bg-amber-400'} mr-2"></div>
+                ${child}
+              </button>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
+    </div>
+  `;
 }
 
 // Function to render a menu group
@@ -439,15 +442,37 @@ function renderMenuGroup(group, groupIndex) {
   `;
 }
 
+// Function to toggle hamburger visibility
+function toggleHamburgerVisibility(sidebarIsOpen) {
+  const hamburger = document.getElementById('mobile-nav-toggle');
+  if (hamburger) {
+    if (sidebarIsOpen) {
+      hamburger.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+      hamburger.classList.remove('opacity-0', 'pointer-events-none');
+    }
+  }
+}
+
 // Function to render the sidebar
 function renderSidebar() {
   const sidebar = document.getElementById('sidebar');
   
-  // Update sidebar width based on state
-  sidebar.className = `${
-    isSidebarOpen ? 'w-64' : 'w-16'
-  } bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 h-screen z-30`;
+  // First, make sure sidebar exists
+  if (!sidebar) return;
+  
+  // Update sidebar width and position classes based on state
+  if (isMobile) {
+    sidebar.className = `bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col fixed top-0 h-screen z-40 ${
+      isSidebarShowing ? 'left-0 w-64' : '-left-64 w-0'
+    }`;
+  } else {
+    sidebar.className = `bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 h-screen z-40 ${
+      isSidebarOpen ? 'w-64' : 'w-16'
+    }`;
+  }
 
+  // Always render the sidebar content
   let sidebarHTML = `
     <!-- Header with modern design -->
     <div class="h-16 flex items-center justify-between px-3">
@@ -463,7 +488,7 @@ function renderSidebar() {
                 class="text-gray-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-indigo-50 transition-colors"
                 aria-label="Collapse Sidebar"
             >
-                <span class="flex items-center justify-center">${svgIcons["ChevronLeft"]}</span>
+                <span class="flex items-center justify-center w-full h-full">${svgIcons["ChevronLeft"]}</span>
             </button>
         ` : `
             <button 
@@ -493,7 +518,7 @@ function renderSidebar() {
         </div>
       </div>
     `;
-  } 
+  }
 
   // Add menu groups
   sidebarHTML += `
@@ -503,6 +528,7 @@ function renderSidebar() {
   `;
 
   sidebar.innerHTML = sidebarHTML;
+  sidebarContentInitialized = true;
   
   // Add event listeners
   if (isSidebarOpen) {
@@ -519,14 +545,22 @@ function renderSidebar() {
 
   // Update main content margin
   const mainContent = document.getElementById('main-content');
-  mainContent.className = `transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-64' : 'ml-16'}`;
+  if (isMobile) {
+    mainContent.className = `transition-all duration-300 ease-in-out ml-0`;
+  } else {
+    mainContent.className = `transition-all duration-300 ease-in-out ${isSidebarOpen ? 'ml-64' : 'ml-16'}`;
+  }
   
   // Update header position
   const header = document.getElementById('header');
   if (header) {
-    header.className = `h-16 bg-white border-b border-gray-200 fixed right-0 top-0 z-30 transition-all duration-300 ease-in-out ${
-      isSidebarOpen ? 'left-64' : 'left-16'
-    }`;
+    if (isMobile) {
+      header.className = `h-16 bg-white border-b border-gray-200 fixed right-0 top-0 z-30 left-0 transition-all duration-300 ease-in-out`;
+    } else {
+      header.className = `h-16 bg-white border-b border-gray-200 fixed right-0 top-0 z-30 transition-all duration-300 ease-in-out ${
+        isSidebarOpen ? 'left-64' : 'left-16'
+      }`;
+    }
   }
 }
 
@@ -829,29 +863,152 @@ function handleSubmenuItemClick(parentPage, subPage) {
   navigateToPage(`${parentPage}/${subPage}`);
 }
 
-// Function to toggle sidebar
 function toggleSidebar() {
-  isSidebarOpen = !isSidebarOpen;
-  
-  // Close any open submenu when collapsing sidebar
-  if (!isSidebarOpen) {
-    openSubmenuIndex = null;
+  if (!isMobile) {
+    // Desktop behavior remains unchanged
+    isSidebarOpen = !isSidebarOpen;
+    
+    if (!isSidebarOpen) {
+      openSubmenuIndex = null;
+    }
+    
+    renderSidebar();
+  } else {
+    // Mobile behavior - toggle visibility without changing content
+    isSidebarShowing = !isSidebarShowing;
+    
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    const mainContent = document.getElementById('main-content');
+    const header = document.getElementById('header');
+    
+    if (isSidebarShowing) {
+      // Show sidebar
+      sidebar.classList.remove('-left-64');
+      sidebar.classList.add('left-0', 'w-64');
+      
+      // Show overlay
+      if (!overlay) {
+        createMobileOverlay();
+      } else {
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-50');
+      }
+      
+      // Prevent body scrolling when sidebar is open
+      document.body.classList.add('overflow-hidden', 'md:overflow-auto');
+      
+      // Add sidebar-open class to main content and header
+      mainContent.classList.add('sidebar-open');
+      header.classList.add('sidebar-open');
+      
+      // Hide hamburger
+      toggleHamburgerVisibility(true);
+    } else {
+      // Hide sidebar
+      sidebar.classList.remove('left-0');
+      sidebar.classList.add('-left-64');
+      
+      // Hide overlay
+      if (overlay) {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        overlay.classList.remove('opacity-50');
+      }
+      
+      // Restore body scrolling
+      document.body.classList.remove('overflow-hidden');
+      
+      // Remove sidebar-open class from main content and header
+      mainContent.classList.remove('sidebar-open');
+      header.classList.remove('sidebar-open');
+      
+      // Show hamburger
+      toggleHamburgerVisibility(false);
+    }
   }
+}
+
+// Create a semi-transparent overlay for mobile sidebar
+function createMobileOverlay() {
+  const overlay = document.createElement('div');
+  overlay.id = 'mobile-overlay';
+  overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 z-20 transition-opacity duration-300 md:hidden';
   
-  renderSidebar();
+  // Close sidebar when tapping the overlay
+  overlay.addEventListener('click', toggleSidebar);
+  document.body.appendChild(overlay);
 }
 
 // Handle window resize for responsive behavior
 window.addEventListener('resize', () => {
-  const windowWidth = window.innerWidth;
-  if (windowWidth < 768 && isSidebarOpen) {
-    isSidebarOpen = false;
+  const wasMobile = isMobile;
+  isMobile = window.innerWidth < 768;
+  
+  // When switching between mobile and desktop modes
+  if (wasMobile !== isMobile) {
+    // Hide overlay when switching to desktop
+    if (!isMobile) {
+      const overlay = document.getElementById('mobile-overlay');
+      if (overlay) {
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+      }
+      document.body.classList.remove('overflow-hidden');
+      
+      // Reset sidebar states for desktop
+      isSidebarShowing = false;
+    } else {
+      // When going to mobile, reset mobile states
+      isSidebarShowing = false;
+    }
+    
     renderSidebar();
   }
 });
 
-// Initial render
+// Modified initialization
 document.addEventListener('DOMContentLoaded', () => {
+  isMobile = window.innerWidth < 768;
   renderSidebar();
   navigateToPage('home'); // Start with home page
 });
+
+// Additional function to update the sidebar header specifically for mobile
+function renderMobileSidebarHeader() {
+  // Get the sidebar header container
+  const sidebarHeaderContainer = document.querySelector('#sidebar .h-16');
+  if (!sidebarHeaderContainer) return;
+  
+  // Create a better mobile sidebar header with a close button
+  sidebarHeaderContainer.innerHTML = `
+    <div class="flex items-center px-4 h-full">
+      <div class="flex items-center">
+        <div class="w-9 h-9 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center shadow-lg">
+          <span class="flex items-center justify-center text-amber-300">${svgIcons["Zap"]}</span>
+        </div>
+        <span class="ml-3 font-semibold text-gray-900">ERPNext</span>
+      </div>
+      <button 
+        id="toggle-sidebar-close"
+        class="absolute top-3 right-3 text-gray-400 hover:text-indigo-600 p-2 rounded-full hover:bg-indigo-50 transition-colors"
+        aria-label="Close Sidebar"
+      >
+        <span class="flex items-center justify-center">${svgIcons["X"]}</span>
+      </button>
+    </div>
+  `;
+  
+  // Add event listener to the close button
+  const closeButton = document.getElementById('toggle-sidebar-close');
+  if (closeButton) {
+    closeButton.addEventListener('click', toggleSidebar);
+  }
+}
+
+// Add this to your existing toggleSidebar function for the mobile part:
+if (isMobile && isSidebarShowing) {
+  // After showing the sidebar, update the header
+  setTimeout(renderMobileSidebarHeader, 50);
+}
+
+// Make sure to add the "X" icon to your svgIcons dictionary if it's not already there:
+svgIcons["X"] = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';

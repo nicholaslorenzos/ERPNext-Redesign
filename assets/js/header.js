@@ -209,3 +209,116 @@ document.addEventListener('keydown', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
   renderHeader();
 });
+
+function renderMobileHeader() {
+  const header = document.getElementById('header');
+  
+  // Only apply mobile header when in mobile view
+  if (window.innerWidth >= 768) {
+    renderHeader(); // Use standard header for desktop
+    return;
+  }
+  
+  const headerHTML = `
+    <div class="h-full flex items-center justify-between px-4">
+      <!-- Left: App Logo and Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-lg flex items-center justify-center shadow-sm">
+          <span class="flex items-center justify-center text-amber-300">${getIconSvg("Zap", "w-4 h-4")}</span>
+        </div>
+        <span class="font-semibold text-gray-900 text-sm">ERPNext</span>
+      </div>
+
+      <!-- Right: Essential Actions Only -->
+      <div class="flex items-center space-x-1">
+        <!-- Search Toggle -->
+        <button 
+          id="mobile-search-toggle"
+          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          title="Search"
+        >
+          ${getIconSvg("Search", "w-5 h-5")}
+        </button>
+
+        <!-- Notifications (with indicator) -->
+        <button 
+          id="mobile-notifications-toggle"
+          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors relative"
+          title="Notifications"
+        >
+          ${getIconSvg("Bell", "w-5 h-5")}
+          <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+
+        <!-- Profile -->
+        <button 
+          id="mobile-profile-toggle"
+          class="flex items-center p-1 hover:bg-gray-100 rounded-lg transition-colors"
+          title="Your account"
+        >
+          <div class="w-7 h-7 bg-indigo-500 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+            A
+          </div>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Search Drawer (Hidden by default) -->
+    <div id="mobile-search-drawer" class="hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-b border-gray-200 p-3 z-20 animate-fadeIn">
+      <div class="relative">
+        <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          ${getIconSvg("Search", "w-5 h-5")}
+        </span>
+        <input
+          id="mobile-search-input"
+          type="text"
+          placeholder="Search..."
+          class="w-full pl-10 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  `;
+
+  header.innerHTML = headerHTML;
+  
+  // Add event listeners for mobile header
+  document.getElementById('mobile-search-toggle').addEventListener('click', toggleMobileSearch);
+  document.getElementById('mobile-notifications-toggle').addEventListener('click', () => {
+    notificationsOpen = !notificationsOpen;
+    renderMobileHeader();
+  });
+  document.getElementById('mobile-profile-toggle').addEventListener('click', () => {
+    profileOpen = !profileOpen;
+    renderMobileHeader();
+  });
+}
+
+// Mobile search drawer toggle
+function toggleMobileSearch() {
+  const searchDrawer = document.getElementById('mobile-search-drawer');
+  if (searchDrawer.classList.contains('hidden')) {
+    searchDrawer.classList.remove('hidden');
+    document.getElementById('mobile-search-input').focus();
+  } else {
+    searchDrawer.classList.add('hidden');
+  }
+}
+
+// Modify the existing window resize event listener in header.js to call the appropriate header renderer
+window.addEventListener('resize', () => {
+  if (window.innerWidth < 768) {
+    renderMobileHeader();
+  } else {
+    renderHeader();
+  }
+});
+
+// Update the DOMContentLoaded event in header.js
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth < 768) {
+    renderMobileHeader();
+  } else {
+    renderHeader();
+  }
+});

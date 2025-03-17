@@ -129,3 +129,22 @@ margin-bottom: 0.375rem;
 font-size: 0.875rem;
 font-weight: 500;
 }
+
+@media (max-width: 768px) {
+  /* Make menu items more tappable on mobile */
+  #sidebar button {
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+  
+  /* More space for submenu items */
+  #sidebar .submenu button {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Better menu typography */
+  #sidebar button span {
+    font-size: 0.875rem;
+  }
+}

@@ -64,10 +64,10 @@
 <body class="min-h-screen bg-gray-50 font-sans antialiased">
   <!-- Mobile Nav Toggle (Only visible on small screens) -->
   <div id="mobile-nav-toggle" class="fixed top-4 left-4 z-50 md:hidden">
-    <button class="p-2 bg-white rounded-lg shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors" aria-label="Toggle menu">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
+    <button class="p-2 bg-white rounded-lg shadow-md text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center justify-center" aria-label="Toggle menu">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="18" x2="20" y2="18"></line></svg>
     </button>
-  </div>
+  </div>  
 
   <!-- Sidebar -->
   <aside id="sidebar" class="w-64 bg-white border-r border-gray-200 transition-all duration-300 ease-in-out flex flex-col fixed top-0 left-0 h-screen z-40 shadow-md">
@@ -103,13 +103,58 @@
       const mobileToggle = document.getElementById('mobile-nav-toggle');
       if (mobileToggle) {
         mobileToggle.addEventListener('click', () => {
-          const sidebar = document.getElementById('sidebar');
-          if (sidebar.classList.contains('w-0') || sidebar.classList.contains('-left-64')) {
-            sidebar.classList.remove('w-0', '-left-64');
-            sidebar.classList.add('w-64', 'left-0');
+          // Call the toggleSidebar function from sidebar.js
+          if (typeof toggleSidebar === 'function') {
+            toggleSidebar();
           } else {
-            sidebar.classList.remove('w-64', 'left-0');
-            sidebar.classList.add('w-0', '-left-64');
+            // Fallback if toggleSidebar isn't defined yet
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const header = document.getElementById('header');
+            
+            if (sidebar.classList.contains('-left-64') || !sidebar.classList.contains('left-0')) {
+              sidebar.classList.remove('-left-64');
+              sidebar.classList.add('left-0', 'w-64');
+              
+              // Add sidebar-open class to main content and header for transition
+              mainContent.classList.add('sidebar-open');
+              header.classList.add('sidebar-open');
+              
+              // Create overlay if it doesn't exist
+              if (!document.getElementById('mobile-overlay')) {
+                const overlay = document.createElement('div');
+                overlay.id = 'mobile-overlay';
+                overlay.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 z-20 transition-opacity duration-300 md:hidden';
+                
+                // Close sidebar when tapping the overlay
+                overlay.addEventListener('click', function() {
+                  mobileToggle.click();
+                });
+                
+                document.body.appendChild(overlay);
+              } else {
+                document.getElementById('mobile-overlay').classList.remove('opacity-0', 'pointer-events-none');
+              }
+              
+              // Prevent body scrolling when sidebar is open
+              document.body.classList.add('overflow-hidden', 'md:overflow-auto');
+            } else {
+              sidebar.classList.remove('left-0', 'w-64');
+              sidebar.classList.add('-left-64', 'w-0');
+              
+              // Remove sidebar-open class from main content and header
+              mainContent.classList.remove('sidebar-open');
+              header.classList.remove('sidebar-open');
+              
+              // Hide overlay
+              const overlay = document.getElementById('mobile-overlay');
+              if (overlay) {
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+              }
+              
+              // Restore body scrolling
+              document.body.classList.remove('overflow-hidden');
+            }
           }
         });
       }

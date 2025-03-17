@@ -141,8 +141,18 @@
   /* Sidebar specifically styled elements */
   #sidebar {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
+/* Bigger touch target for mobile sidebar toggle */
+#toggle-sidebar-close {
+  min-height: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
   /* Submenu icons */
   .submenu-open [data-lucide="ChevronDown"] {
     transform: rotate(180deg);
@@ -169,11 +179,6 @@
   
   /* Media Queries */
   @media (max-width: 768px) {
-    #sidebar {
-      width: 0;
-      left: -16rem;
-    }
-    
     #sidebar.is-open {
       width: 16rem;
       left: 0;
@@ -188,4 +193,146 @@
       left: 16rem;
       margin-left: 0;
     }
+
+    #toggle-sidebar-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      padding: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Additional mobile sidebar header styling */
+    #sidebar .h-16 {
+      position: relative;
+    }
   }
+
+  /* Mobile-specific enhancements */
+@media (max-width: 768px) {
+  /* Better mobile sidebar */
+  #sidebar {
+    width: 0;
+    left: -16rem;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 40;
+  }
+  
+  #sidebar.left-0 {
+    width: 16rem;
+    left: 0;
+  }
+  
+  /* Mobile header */
+  #header {
+    left: 0 !important;
+    margin-left: 0 !important;
+    width: 100%;
+    z-index: 30;
+  }
+  
+  /* Mobile main content */
+  #main-content {
+    margin-left: 0 !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Mobile toggle button - make it more visible */
+  #mobile-nav-toggle {
+    z-index: 50;
+    top: 0.75rem;
+    left: 0.75rem;
+    transition: opacity 0.1s ease-out, transform 0.1s ease-out;
+  }
+
+  #mobile-nav-toggle.opacity-0 {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+  }
+  
+  #mobile-nav-toggle button {
+    background-color: white;
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Mobile overlay for backdrop */
+  #mobile-overlay {
+    backdrop-filter: blur(2px);
+  }
+  
+  /* Better card spacing on mobile */
+  .grid {
+    gap: 0.75rem !important;
+  }
+  
+  /* Mobile stats cards - smaller paddings */
+  .grid .p-6 {
+    padding: 1rem;
+  }
+  
+  /* Reduce text size slightly on mobile */
+  .text-3xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  /* Improved mobile search animation */
+  @keyframes mobileSearchIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  #mobile-search-drawer {
+    animation: mobileSearchIn 0.2s ease-out;
+  }
+  
+  /* Prevent content shifting when scrollbar appears */
+  html {
+    scrollbar-gutter: stable;
+  }
+  
+  /* Mobile sidebar drawer - improved scrollbar */
+  #sidebar::-webkit-scrollbar {
+    width: 3px;
+  }
+  
+  #sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(156, 163, 175, 0.3);
+    border-radius: 3px;
+  }
+  
+  /* Improved tap targets for better mobile UX */
+  button, 
+  .category-item, 
+  input[type="checkbox"] {
+    min-height: 2.5rem;
+  }
+  
+  /* More compact quick action buttons on mobile */
+  @media (max-width: 640px) {
+    #quick-actions-section .p-4 {
+      padding: 0.75rem;
+    }
+    
+    #quick-actions-section .text-sm {
+      font-size: 0.75rem;
+    }
+  }
+}
