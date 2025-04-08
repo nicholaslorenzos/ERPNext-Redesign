@@ -1,0 +1,268 @@
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Define color variables for both light and dark modes */
+:root {
+  /* Light mode variables - IMPROVED */
+  --light-bg-primary: #f8fafc;
+  --light-bg-secondary: #ffffff;
+  --light-bg-tertiary: #f1f5f9;
+  
+  --light-text-primary: #0f172a;
+  --light-text-secondary: #334155;
+  --light-text-tertiary: #64748b;
+  
+  --light-border-primary: #e2e8f0;
+  --light-border-secondary: #cbd5e1;
+  
+  --light-accent-primary: #4f46e5;
+  --light-accent-secondary: #3730a3;
+  --light-accent-tertiary: #312e81;
+
+  /* Initialize with light mode */
+  --bg-primary: var(--light-bg-primary);
+  --bg-secondary: var(--light-bg-secondary);
+  --bg-tertiary: var(--light-bg-tertiary);
+  
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --text-tertiary: var(--light-text-tertiary);
+  
+  --border-primary: var(--light-border-primary);
+  --border-secondary: var(--light-border-secondary);
+  
+  --accent-primary: var(--light-accent-primary);
+  --accent-secondary: var(--light-accent-secondary);
+  --accent-tertiary: var(--light-accent-tertiary);
+}
+
+/* Dark theme variables - IMPROVED */
+:root.dark-theme {
+  /* Dark mode variables */
+  --dark-bg-primary: #0f172a;
+  --dark-bg-secondary: #1e293b;
+  --dark-bg-tertiary: #334155;
+  
+  --dark-text-primary: #f8fafc;
+  --dark-text-secondary: #e2e8f0;
+  --dark-text-tertiary: #cbd5e1;
+  
+  --dark-border-primary: #475569;
+  --dark-border-secondary: #64748b;
+  
+  --dark-accent-primary: #818cf8;
+  --dark-accent-secondary: #6366f1;
+  --dark-accent-tertiary: #4f46e5;
+
+  /* Override with dark mode values */
+  --bg-primary: var(--dark-bg-primary);
+  --bg-secondary: var(--dark-bg-secondary);
+  --bg-tertiary: var(--dark-bg-tertiary);
+  
+  --text-primary: var(--dark-text-primary);
+  --text-secondary: var(--dark-text-secondary);
+  --text-tertiary: var(--dark-text-tertiary);
+  
+  --border-primary: var(--dark-border-primary);
+  --border-secondary: var(--dark-border-secondary);
+  
+  --accent-primary: var(--dark-accent-primary);
+  --accent-secondary: var(--dark-accent-secondary); 
+  --accent-tertiary: var(--dark-accent-tertiary);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility classes for consistency */
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.transition-all {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Custom styles for gradients and specific elements */
+.bg-gradient-to-br {
+  background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+
+.bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+/* Ensure SVGs inherit currentColor */
+svg {
+  stroke: currentColor;
+  fill: none;
+  vertical-align: middle;
+}
+
+/* Main content area styling */
+#main-content {
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  transition: margin-left 0.3s ease-in-out;
+}
+
+/* Common card styling */
+.bg-white {
+  background-color: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+.text-gray-800,
+.text-gray-900 {
+  color: var(--text-primary);
+}
+
+.text-gray-600,
+.text-gray-700 {
+  color: var(--text-secondary);
+}
+
+.text-gray-500 {
+  color: var(--text-tertiary);
+}
+
+/* Common border styling */
+.border,
+.border-gray-100,
+.border-gray-200 {
+  border-color: var(--border-primary);
+}
+
+/* Dark mode shadow adjustments */
+:root.dark-theme .shadow-lg,
+:root.dark-theme .shadow-md,
+:root.dark-theme .shadow-sm {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar styling */
+:root.dark-theme *::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+:root.dark-theme *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+:root.dark-theme *::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: 3px;
+}
+
+:root.dark-theme *::-webkit-scrollbar-thumb:hover {
+  background-color: var(--accent-primary);
+}
+
+/* Form elements */
+:root.dark-theme input,
+:root.dark-theme select,
+:root.dark-theme textarea {
+  background-color: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+  color: var(--text-secondary);
+}
+
+:root.dark-theme input:focus,
+:root.dark-theme select:focus,
+:root.dark-theme textarea:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.25);
+}
+
+/* Animation */
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+  .md\:overflow-auto {
+    overflow: auto;
+  }
+}
+
+/* Create Workspace button consistency in dark mode */
+:root.dark-theme .btn-primary,
+:root.dark-theme button.btn-primary,
+:root.dark-theme .btn.btn-primary {
+  background-color: var(--accent-tertiary) !important;
+  color: white !important;
+  border-color: transparent !important;
+}
+
+:root.dark-theme .btn-primary:hover,
+:root.dark-theme button.btn-primary:hover,
+:root.dark-theme .btn.btn-primary:hover {
+  background-color: var(--accent-secondary) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Buttons with explicit bg-indigo-600 class */
+:root.dark-theme .bg-indigo-600,
+:root.dark-theme button.bg-indigo-600,
+:root.dark-theme [class*="bg-indigo-600"] {
+  background-color: var(--accent-tertiary) !important;
+}
+
+:root.dark-theme .bg-indigo-600:hover,
+:root.dark-theme button.bg-indigo-600:hover,
+:root.dark-theme [class*="bg-indigo-600"]:hover {
+  background-color: var(--accent-secondary) !important;
+}
+
+/* Ensure button text remains white */
+:root.dark-theme .btn-primary,
+:root.dark-theme .bg-indigo-600,
+:root.dark-theme [class*="bg-indigo-600"] {
+  color: white !important;
+}
+
+/* Override any text color classes that might be applied */
+:root.dark-theme .btn-primary .text-white,
+:root.dark-theme .bg-indigo-600 .text-white,
+:root.dark-theme [class*="bg-indigo-600"] .text-white {
+  color: white !important;
+}
